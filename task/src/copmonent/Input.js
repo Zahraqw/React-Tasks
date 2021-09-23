@@ -1,18 +1,35 @@
 import React, { Component, Fragment } from "react";
 import Item from "./Item";
-
+import axios from "axios";
+import "../css/Input.css";
 class Input extends Component {
   constructor(props) {
     super(props);
-
+    this.inputRef = React.createRef();
     this.state = {
       itemName: "",
+      definedList: [],
       listValues: [],
-      allItems: [],
+      allItem: [],
     };
   }
+
+  componentDidMount = () => {
+    axios
+      .get("./assets/data/list.json")
+      .then((response) => {
+        this.setState({
+          listValues: response.data,
+          allItem: response.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    this.inputRef.current.focus();
+  };
   addItem = (event) => {
-    const { itemName, listValues } = this.state;
+    const { itemName, listValues, allItem } = this.state;
     if (itemName !== "") {
       this.setState({
         listValues: [
@@ -20,6 +37,10 @@ class Input extends Component {
           { id: listValues.length, value: itemName, checked: "false" },
         ],
         itemName: "",
+        allItem: [
+          ...allItem,
+          { id: listValues.length, value: itemName, checked: "false" },
+        ],
       });
     }
 
@@ -30,6 +51,7 @@ class Input extends Component {
     const { listValues } = this.state;
     this.setState({
       listValues: listValues.filter((item) => item.id !== itemId),
+      allItem: listValues.filter((item) => item.id !== itemId),
     });
   };
   updateItem = (itemId, value) => {
@@ -51,18 +73,25 @@ class Input extends Component {
   };
   showActiveTasks = () => {
     const { listValues } = this.state;
-    this.setState({
-      allItems: listValues,
+    this.setState((prevState) => ({
+      allItem: prevState.listValues,
       listValues: listValues.filter((item) => item.checked === "true"),
+    }));
+  };
+  showallTasks = () => {
+    const { allItem } = this.state;
+    this.setState({
+      listValues: allItem,
     });
   };
-
   render() {
     const { listValues } = this.state;
+
     return (
-      <div>
-        <form onSubmit={this.addItem}>
+      <div className="container">
+        <form onSubmit={this.addItem} className="input-box">
           <input
+            placeholder="Add new task"
             type="text"
             value={this.state.itemName}
             onChange={(e) =>
@@ -70,15 +99,26 @@ class Input extends Component {
                 itemName: e.target.value,
               })
             }
+            className="input-container"
+            ref={this.inputRef}
           />
-          <input type="submit" value="Add" />
+          <input type="submit" value="Add new Task" className="add-block" />
         </form>
-        <button>Show all tasks</button>
-        <button onClick={this.showActiveTasks}>Show active tasks</button>
+        <div className="btn-container">
+          <button onClick={this.showallTasks} className="btn-wrapper btn-1">
+            Show all tasks
+          </button>
+          <button onClick={this.showActiveTasks} className="btn-wrapper">
+            Show active tasks
+          </button>
+        </div>
+
         {listValues.length > 0 ? (
           <Fragment>
-            <h1>{listValues.length} tasks remaining</h1>
-            <ul>
+            <h2 className="taske-header">
+              {listValues.length} tasks remaining
+            </h2>
+            <ul className="list-item">
               {listValues.map((item) => (
                 <li key={item.id}>
                   <Item
