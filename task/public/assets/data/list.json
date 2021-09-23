@@ -1,0 +1,17 @@
+[
+  {
+    "id": "0",
+    "value": "Eat",
+    "checked": "false"
+  },
+  {
+    "id": "1",
+    "value": "Sleep",
+    "checked": "false"
+  },
+  {
+    "id": "2",
+    "value": "Repeate",
+    "checked": "false"
+  }
+]

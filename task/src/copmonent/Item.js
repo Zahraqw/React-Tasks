@@ -1,5 +1,7 @@
-import React, { Component, Fragment } from "react";
-
+import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { FaRegTrashAlt, FaRegEdit } from "react-icons/fa";
+import Button from "react-bootstrap/Button";
 export class Item extends Component {
   constructor(props) {
     super(props);
@@ -30,8 +32,8 @@ export class Item extends Component {
     const { value } = this.props.item;
     const { deleteitem } = this.props;
     return (
-      <Fragment>
-        <input type="checkbox" onChange={this.handleChange} />
+      <div className="item-block">
+        <input type="checkbox" onChange={this.handleChange} className="check" />
         {this.state.edited ? (
           <input
             type="text"
@@ -40,14 +42,20 @@ export class Item extends Component {
             onChange={(e) => this.setState({ newVlaue: e.target.value })}
           />
         ) : (
-          <label>{value}</label>
+          <label className="item-title">{value}</label>
         )}
-        <br />
-        <button onClick={() => this.setState({ edited: true })}>
-          Edit {value}
-        </button>
-        <button onClick={deleteitem}>Delete {value}</button>
-      </Fragment>
+
+        <Button
+          onClick={() => this.setState({ edited: true })}
+          variant="secondary"
+          className="edit-btn"
+        >
+          <FaRegEdit />
+        </Button>
+        <Button onClick={deleteitem} variant="warning" className="del-btn">
+          <FaRegTrashAlt />
+        </Button>
+      </div>
     );
   }
 }
